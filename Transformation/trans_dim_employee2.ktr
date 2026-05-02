@@ -437,16 +437,6 @@
   </notepads>
   <order>
     <hop>
-      <from>AgeGroup</from>
-      <to>DistanceCategory</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>DistanceCategory</from>
-      <to>Dimension lookup/update</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Employee Input</from>
       <to>Filter Duplicates 2</to>
       <enabled>Y</enabled>
@@ -457,148 +447,6 @@
       <enabled>Y</enabled>
     </hop>
   </order>
-  <step>
-    <name>AgeGroup</name>
-    <type>NumberRange</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <inputField>﻿Age</inputField>
-    <outputField>AgeGroup</outputField>
-    <fallBackValue>unknown</fallBackValue>
-    <rules>
-      <rule>
-        <lower_bound>-1.7976931348623157E308</lower_bound>
-        <upper_bound>32.0</upper_bound>
-        <value>Early_Career</value>
-      </rule>
-      <rule>
-        <lower_bound>32.0</lower_bound>
-        <upper_bound>46.0</upper_bound>
-        <value>Mid_Career</value>
-      </rule>
-      <rule>
-        <lower_bound>46.0</lower_bound>
-        <upper_bound>1.7976931348623157E308</upper_bound>
-        <value>Senior</value>
-      </rule>
-    </rules>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>240</xloc>
-      <yloc>416</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Dimension lookup/update</name>
-    <type>DimensionLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <schema/>
-    <table>dim_employee</table>
-    <connection>conn_olap</connection>
-    <commit>100</commit>
-    <update>Y</update>
-    <fields>
-      <key>
-        <name>EmployeeNumber</name>
-        <lookup>EmployeeNumber</lookup>
-      </key>
-      <date>
-        <name/>
-        <from>date_from</from>
-        <to>date_to</to>
-      </date>
-      <field>
-        <name>﻿Age</name>
-        <lookup>﻿Age</lookup>
-        <update>Insert</update>
-      </field>
-      <field>
-        <name>DistanceFromHome</name>
-        <lookup>DistanceFromHome</lookup>
-        <update>Insert</update>
-      </field>
-      <field>
-        <name>Education</name>
-        <lookup>Education</lookup>
-        <update>Insert</update>
-      </field>
-      <field>
-        <name>EducationField</name>
-        <lookup>EducationField</lookup>
-        <update>Insert</update>
-      </field>
-      <field>
-        <name>Gender</name>
-        <lookup>Gender</lookup>
-        <update>Insert</update>
-      </field>
-      <field>
-        <name>MaritalStatus</name>
-        <lookup>MaritalStatus</lookup>
-        <update>Insert</update>
-      </field>
-      <field>
-        <name>AgeGroup</name>
-        <lookup>AgeGroup</lookup>
-        <update>Insert</update>
-      </field>
-      <field>
-        <name>DistanceCategory</name>
-        <lookup>DistanceCategory</lookup>
-        <update>Insert</update>
-      </field>
-      <return>
-        <name>EmployeeKey</name>
-        <rename/>
-        <creation_method>autoinc</creation_method>
-        <use_autoinc>Y</use_autoinc>
-        <version>version</version>
-      </return>
-    </fields>
-    <sequence/>
-    <min_year>1900</min_year>
-    <max_year>2199</max_year>
-    <cache_size>5000</cache_size>
-    <preload_cache>N</preload_cache>
-    <use_start_date_alternative>Y</use_start_date_alternative>
-    <start_date_alternative>sysdate</start_date_alternative>
-    <start_date_field_name/>
-    <useBatch>N</useBatch>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>480</xloc>
-      <yloc>416</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
   <step>
     <name>Dimension lookup/update 2</name>
     <type>DimensionLookup</type>
@@ -683,51 +531,6 @@
     <GUI>
       <xloc>416</xloc>
       <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>DistanceCategory</name>
-    <type>NumberRange</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <inputField>DistanceFromHome</inputField>
-    <outputField>DistanceCategory</outputField>
-    <fallBackValue>unknown</fallBackValue>
-    <rules>
-      <rule>
-        <lower_bound>1.0</lower_bound>
-        <upper_bound>7.0</upper_bound>
-        <value>Near</value>
-      </rule>
-      <rule>
-        <lower_bound>7.0</lower_bound>
-        <upper_bound>14.0</upper_bound>
-        <value>Moderate</value>
-      </rule>
-      <rule>
-        <lower_bound>14.0</lower_bound>
-        <upper_bound>1.7976931348623157E308</upper_bound>
-        <value>Far</value>
-      </rule>
-    </rules>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>368</xloc>
-      <yloc>416</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -933,57 +736,6 @@ FROM group2_clean.data_clean
     <GUI>
       <xloc>112</xloc>
       <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Filter Duplicates</name>
-    <type>UniqueRowsByHashSet</type>
-    <description/>
-    <distribute>N</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <store_values>N</store_values>
-    <reject_duplicate_row>N</reject_duplicate_row>
-    <error_description/>
-    <fields>
-      <field>
-        <name>﻿Age</name>
-      </field>
-      <field>
-        <name>DistanceFromHome</name>
-      </field>
-      <field>
-        <name>Education</name>
-      </field>
-      <field>
-        <name>EducationField</name>
-      </field>
-      <field>
-        <name>EmployeeNumber</name>
-      </field>
-      <field>
-        <name>Gender</name>
-      </field>
-      <field>
-        <name>MaritalStatus</name>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>112</xloc>
-      <yloc>416</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
