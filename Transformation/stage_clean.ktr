@@ -473,7 +473,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <filename>D:\DE\Final_Project_Dataset\HR-Employee-Attrition.csv</filename>
+    <filename>D:\DE\Final_Project\Dataset\HR-Employee-Attrition.csv</filename>
     <filename_field/>
     <rownum_field/>
     <include_filename>N</include_filename>
@@ -1080,7 +1080,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>cleaning_stage</connection>
+    <connection>oltp_conn</connection>
     <commit>100</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>

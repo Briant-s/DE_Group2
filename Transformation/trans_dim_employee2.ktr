@@ -460,7 +460,7 @@
     </partitioning>
     <schema/>
     <table>dim_employee</table>
-    <connection>conn_olap</connection>
+    <connection>olap_conn</connection>
     <commit>100</commit>
     <update>Y</update>
     <fields>
@@ -545,7 +545,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>cleaning_stage</connection>
+    <connection>oltp_conn</connection>
     <sql>SELECT
   EmployeeNumber
 , Gender
@@ -554,7 +554,7 @@
 , EducationField
 , BusinessTravel
 , Overtime
-FROM group2_clean.data_clean
+FROM hr_oltp.data_clean
 </sql>
     <limit>0</limit>
     <lookup/>

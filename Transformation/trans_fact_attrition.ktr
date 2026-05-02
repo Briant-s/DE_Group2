@@ -457,7 +457,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>cleaning_stage</connection>
+    <connection>oltp_conn</connection>
     <sql>SELECT
   em.EmployeeKey
 , job.JobKey
@@ -478,20 +478,20 @@
 , YearsInCurrentRole
 , YearsSinceLastPromotion
 , YearsWithCurrManager
-FROM group2_clean.data_clean as dc
-JOIN group2_olap.dim_employee as em
+FROM hr_oltp.data_clean as dc
+JOIN hr_olap.dim_employee as em
 	ON dc.EmployeeNumber = em.EmployeeNumber
-JOIN group2_olap.dim_job as job
+JOIN hr_olap.dim_job as job
 	ON dc.Department = job.Department
 	AND dc.JobRole = job.JobRole
 	AND dc.JobLevel = job.JobLevel
-JOIN group2_olap.dim_satisfaction as sat
+JOIN hr_olap.dim_satisfaction as sat
 	ON dc.EnvironmentSatisfaction = sat.EnvironmentSatisfaction
 	AND dc.JobSatisfaction = sat.JobSatisfaction
 	AND dc.RelationshipSatisfaction = sat.RelationshipSatisfaction
 	AND dc.WorkLifeBalance = sat.WorkLifeBalance
 	AND dc.JobInvolvement = sat.JobInvolvement
-JOIN group2_olap.dim_performance as per
+JOIN hr_olap.dim_performance as per
 	ON dc.PerformanceRating = per.PerformanceRating
 	AND dc.StockOptionLevel = per.StockOptionLevel
 </sql>
@@ -965,7 +965,7 @@ JOIN group2_olap.dim_performance as per
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>conn_olap</connection>
+    <connection>olap_conn</connection>
     <commit>100</commit>
     <update_bypassed>N</update_bypassed>
     <lookup>
