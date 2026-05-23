@@ -437,18 +437,13 @@
   <order>
     <hop>
       <from>trans_dim_job</from>
-      <to>Filter Duplicates</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Filter Duplicates</from>
-      <to>Dimension lookup/update</to>
+      <to>Dim Job SCD 0</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Dimension lookup/update</name>
-    <type>DimensionLookup</type>
+    <name>Dim Job SCD 0</name>
+    <type>InsertUpdate</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -457,46 +452,46 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <schema/>
-    <table>dim_job</table>
     <connection>olap_conn</connection>
     <commit>100</commit>
-    <update>Y</update>
-    <fields>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>dim_job</table>
       <key>
         <name>Department</name>
-        <lookup>Department</lookup>
+        <field>Department</field>
+        <condition>=</condition>
+        <name2/>
       </key>
       <key>
         <name>JobLevel</name>
-        <lookup>JobLevel</lookup>
+        <field>JobLevel</field>
+        <condition>=</condition>
+        <name2/>
       </key>
       <key>
         <name>JobRole</name>
-        <lookup>JobRole</lookup>
+        <field>JobRole</field>
+        <condition>=</condition>
+        <name2/>
       </key>
-      <date>
-        <name/>
-        <from>date_from</from>
-        <to>date_to</to>
-      </date>
-      <return>
-        <name>JobKey</name>
-        <rename/>
-        <creation_method>autoinc</creation_method>
-        <use_autoinc>Y</use_autoinc>
-        <version>version</version>
-      </return>
-    </fields>
-    <sequence/>
-    <min_year>1900</min_year>
-    <max_year>2199</max_year>
-    <cache_size>5000</cache_size>
-    <preload_cache>N</preload_cache>
-    <use_start_date_alternative>Y</use_start_date_alternative>
-    <start_date_alternative>sysdate</start_date_alternative>
-    <start_date_field_name/>
-    <useBatch>N</useBatch>
+      <value>
+        <name>Department</name>
+        <rename>Department</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>JobLevel</name>
+        <rename>JobLevel</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>JobRole</name>
+        <rename>JobRole</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -506,8 +501,65 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>496</xloc>
+      <xloc>416</xloc>
       <yloc>224</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Error Handling</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <separator>;</separator>
+    <enclosure>"</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>None</compression>
+    <encoding>UTF-8</encoding>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>D:\DE\Final_Project\Error Handling\dim_job\error_dim_job</name>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>Y</do_not_open_new_file_init>
+      <extention>log</extention>
+      <append>Y</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>Y</add_date>
+      <add_time>Y</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery/>
+    </file>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>432</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -523,8 +575,8 @@
       <schema_name/>
     </partitioning>
     <store_values>N</store_values>
-    <reject_duplicate_row>N</reject_duplicate_row>
-    <error_description/>
+    <reject_duplicate_row>Y</reject_duplicate_row>
+    <error_description>DUPLICATE-Job</error_description>
     <fields>
       <field>
         <name>Department</name>
@@ -545,8 +597,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>352</xloc>
-      <yloc>224</yloc>
+      <xloc>288</xloc>
+      <yloc>352</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -566,7 +618,7 @@
   Department
 , JobLevel
 , JobRole
-FROM hr_oltp.data_clean
+FROM hr_oltp.clean_employees
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -660,6 +712,18 @@ FROM hr_oltp.data_clean
     </GUI>
   </step>
   <step_error_handling>
+    <error>
+      <source_step>Filter Duplicates</source_step>
+      <target_step>Error Handling</target_step>
+      <is_enabled>Y</is_enabled>
+      <nr_valuename>error_count</nr_valuename>
+      <descriptions_valuename>rejection_reason</descriptions_valuename>
+      <fields_valuename/>
+      <codes_valuename/>
+      <max_errors/>
+      <max_pct_errors/>
+      <min_pct_rows/>
+    </error>
   </step_error_handling>
   <slave-step-copy-partition-distribution>
   </slave-step-copy-partition-distribution>

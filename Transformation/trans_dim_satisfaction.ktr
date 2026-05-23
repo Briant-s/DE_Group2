@@ -442,12 +442,17 @@
     </hop>
     <hop>
       <from>Filter Duplicates</from>
-      <to>Dimension lookup/update</to>
+      <to>Dim Satisfaction SCD 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter Duplicates</from>
+      <to>Error Handling</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Dimension lookup/update</name>
+    <name>Dim Satisfaction SCD 2</name>
     <type>DimensionLookup</type>
     <description/>
     <distribute>Y</distribute>
@@ -464,30 +469,39 @@
     <update>Y</update>
     <fields>
       <key>
-        <name>EnvironmentSatisfaction</name>
-        <lookup>EnvironmentSatisfaction</lookup>
-      </key>
-      <key>
-        <name>JobSatisfaction</name>
-        <lookup>JobSatisfaction</lookup>
-      </key>
-      <key>
-        <name>RelationshipSatisfaction</name>
-        <lookup>RelationshipSatisfaction</lookup>
-      </key>
-      <key>
-        <name>WorkLifeBalance</name>
-        <lookup>WorkLifeBalance</lookup>
-      </key>
-      <key>
-        <name>JobInvolvement</name>
-        <lookup>JobInvolvement</lookup>
+        <name>EmployeeNumber</name>
+        <lookup>EmployeeNumber</lookup>
       </key>
       <date>
         <name/>
         <from>date_from</from>
         <to>date_to</to>
       </date>
+      <field>
+        <name>EnvironmentSatisfaction</name>
+        <lookup>EnvironmentSatisfaction</lookup>
+        <update>Insert</update>
+      </field>
+      <field>
+        <name>JobSatisfaction</name>
+        <lookup>JobSatisfaction</lookup>
+        <update>Insert</update>
+      </field>
+      <field>
+        <name>RelationshipSatisfaction</name>
+        <lookup>RelationshipSatisfaction</lookup>
+        <update>Insert</update>
+      </field>
+      <field>
+        <name>WorkLifeBalance</name>
+        <lookup>WorkLifeBalance</lookup>
+        <update>Insert</update>
+      </field>
+      <field>
+        <name>JobInvolvement</name>
+        <lookup>JobInvolvement</lookup>
+        <update>Insert</update>
+      </field>
       <return>
         <name>SatisfactionKey</name>
         <rename/>
@@ -498,12 +512,12 @@
     </fields>
     <sequence/>
     <min_year>1900</min_year>
-    <max_year>2199</max_year>
+    <max_year>2035</max_year>
     <cache_size>5000</cache_size>
     <preload_cache>N</preload_cache>
     <use_start_date_alternative>Y</use_start_date_alternative>
-    <start_date_alternative>sysdate</start_date_alternative>
-    <start_date_field_name/>
+    <start_date_alternative>column_value</start_date_alternative>
+    <start_date_field_name>load_date</start_date_field_name>
     <useBatch>N</useBatch>
     <attributes/>
     <cluster_schema/>
@@ -514,8 +528,65 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>384</xloc>
+      <xloc>432</xloc>
       <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Error Handling</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <separator>;</separator>
+    <enclosure>"</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>None</compression>
+    <encoding>UTF-8</encoding>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>D:\DE\Final_Project\Error Handling\dim_satisfaction\error_dim_satisfaction</name>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>Y</do_not_open_new_file_init>
+      <extention>log</extention>
+      <append>Y</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>Y</add_date>
+      <add_time>Y</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery/>
+    </file>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>336</xloc>
+      <yloc>320</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -531,9 +602,12 @@
       <schema_name/>
     </partitioning>
     <store_values>N</store_values>
-    <reject_duplicate_row>N</reject_duplicate_row>
-    <error_description/>
+    <reject_duplicate_row>Y</reject_duplicate_row>
+    <error_description>DUPLICATE-Satisfaction</error_description>
     <fields>
+      <field>
+        <name>EmployeeNumber</name>
+      </field>
       <field>
         <name>EnvironmentSatisfaction</name>
       </field>
@@ -549,6 +623,9 @@
       <field>
         <name>JobInvolvement</name>
       </field>
+      <field>
+        <name>load_date</name>
+      </field>
     </fields>
     <attributes/>
     <cluster_schema/>
@@ -559,7 +636,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>208</xloc>
+      <xloc>240</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
@@ -577,12 +654,14 @@
     </partitioning>
     <connection>oltp_conn</connection>
     <sql>SELECT
-  EnvironmentSatisfaction
+EmployeeNumber  
+, EnvironmentSatisfaction
 , JobSatisfaction
 , RelationshipSatisfaction
 , WorkLifeBalance
 , JobInvolvement
-FROM hr_oltp.data_clean
+, load_date
+FROM hr_oltp.clean_employees
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -591,6 +670,29 @@ FROM hr_oltp.data_clean
     <lazy_conversion_active>N</lazy_conversion_active>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
+      <value-meta>
+        <type>Integer</type>
+        <storagetype>normal</storagetype>
+        <name>EmployeeNumber</name>
+        <length>15</length>
+        <precision>0</precision>
+        <origin>Satisfaction Input</origin>
+        <comments>EmployeeNumber</comments>
+        <conversion_Mask>####0;-####0</conversion_Mask>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_ID</date_format_locale>
+        <date_format_timezone>Asia/Jakarta</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
@@ -706,6 +808,29 @@ FROM hr_oltp.data_clean
         <date_format_timezone>Asia/Jakarta</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
+      <value-meta>
+        <type>Date</type>
+        <storagetype>normal</storagetype>
+        <name>load_date</name>
+        <length>-1</length>
+        <precision>-1</precision>
+        <origin>Satisfaction Input</origin>
+        <comments>load_date</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_ID</date_format_locale>
+        <date_format_timezone>Asia/Jakarta</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
     </row-meta>
     <attributes/>
     <cluster_schema/>
@@ -722,6 +847,18 @@ FROM hr_oltp.data_clean
     </GUI>
   </step>
   <step_error_handling>
+    <error>
+      <source_step>Filter Duplicates</source_step>
+      <target_step>Error Handling</target_step>
+      <is_enabled>Y</is_enabled>
+      <nr_valuename>error_count</nr_valuename>
+      <descriptions_valuename>rejection_reason</descriptions_valuename>
+      <fields_valuename/>
+      <codes_valuename/>
+      <max_errors/>
+      <max_pct_errors/>
+      <min_pct_rows/>
+    </error>
   </step_error_handling>
   <slave-step-copy-partition-distribution>
   </slave-step-copy-partition-distribution>

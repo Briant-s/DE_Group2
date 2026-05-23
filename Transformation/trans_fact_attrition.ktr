@@ -437,11 +437,6 @@
   <order>
     <hop>
       <from>Attrition Input</from>
-      <to>Unique rows (HashSet)</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Unique rows (HashSet)</from>
       <to>Insert / update</to>
       <enabled>Y</enabled>
     </hop>
@@ -478,22 +473,21 @@
 , YearsInCurrentRole
 , YearsSinceLastPromotion
 , YearsWithCurrManager
-FROM hr_oltp.data_clean as dc
+, load_date
+FROM hr_oltp.clean_employees as dc
 JOIN hr_olap.dim_employee as em
 	ON dc.EmployeeNumber = em.EmployeeNumber
+	AND em.date_to = '2035-12-31 23:59:59'
 JOIN hr_olap.dim_job as job
 	ON dc.Department = job.Department
 	AND dc.JobRole = job.JobRole
 	AND dc.JobLevel = job.JobLevel
 JOIN hr_olap.dim_satisfaction as sat
-	ON dc.EnvironmentSatisfaction = sat.EnvironmentSatisfaction
-	AND dc.JobSatisfaction = sat.JobSatisfaction
-	AND dc.RelationshipSatisfaction = sat.RelationshipSatisfaction
-	AND dc.WorkLifeBalance = sat.WorkLifeBalance
-	AND dc.JobInvolvement = sat.JobInvolvement
+	ON dc.EmployeeNumber = sat.EmployeeNumber
+	AND sat.date_to = '2035-12-31 23:59:59'
 JOIN hr_olap.dim_performance as per
-	ON dc.PerformanceRating = per.PerformanceRating
-	AND dc.StockOptionLevel = per.StockOptionLevel
+	ON dc.EmployeeNumber = per.EmployeeNumber
+	AND per.date_to = '2035-12-31 23:59:59'
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -529,7 +523,7 @@ JOIN hr_olap.dim_performance as per
         <type>Integer</type>
         <storagetype>normal</storagetype>
         <name>JobKey</name>
-        <length>15</length>
+        <length>9</length>
         <precision>0</precision>
         <origin>Attrition Input</origin>
         <comments>JobKey</comments>
@@ -939,6 +933,29 @@ JOIN hr_olap.dim_performance as per
         <date_format_timezone>Asia/Jakarta</date_format_timezone>
         <lenient_string_to_number>N</lenient_string_to_number>
       </value-meta>
+      <value-meta>
+        <type>Timestamp</type>
+        <storagetype>normal</storagetype>
+        <name>load_date</name>
+        <length>0</length>
+        <precision>-1</precision>
+        <origin>Attrition Input</origin>
+        <comments>load_date</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_ID</date_format_locale>
+        <date_format_timezone>Asia/Jakarta</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
     </row-meta>
     <attributes/>
     <cluster_schema/>
@@ -949,7 +966,7 @@ JOIN hr_olap.dim_performance as per
       </output>
     </remotesteps>
     <GUI>
-      <xloc>112</xloc>
+      <xloc>304</xloc>
       <yloc>336</yloc>
       <draw>Y</draw>
     </GUI>
@@ -978,110 +995,8 @@ JOIN hr_olap.dim_performance as per
         <name2/>
       </key>
       <key>
-        <name>JobKey</name>
-        <field>JobKey</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>SatisfactionKey</name>
-        <field>SatisfactionKey</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>PerformanceKey</name>
-        <field>PerformanceKey</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>﻿Age</name>
-        <field>﻿Age</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>Attrition</name>
-        <field>Attrition</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>DailyRate</name>
-        <field>DailyRate</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>DistanceFromHome</name>
-        <field>DistanceFromHome</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>HourlyRate</name>
-        <field>HourlyRate</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>MonthlyIncome</name>
-        <field>MonthlyIncome</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>MonthlyRate</name>
-        <field>MonthlyRate</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>NumCompaniesWorked</name>
-        <field>NumCompaniesWorked</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>PercentSalaryHike</name>
-        <field>PercentSalaryHike</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>TotalWorkingYears</name>
-        <field>TotalWorkingYears</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>TrainingTimesLastYear</name>
-        <field>TrainingTimesLastYear</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>YearsAtCompany</name>
-        <field>YearsAtCompany</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>YearsInCurrentRole</name>
-        <field>YearsInCurrentRole</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>YearsSinceLastPromotion</name>
-        <field>YearsSinceLastPromotion</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>YearsWithCurrManager</name>
-        <field>YearsWithCurrManager</field>
+        <name>load_date</name>
+        <field>load_date</field>
         <condition>=</condition>
         <name2/>
       </key>
@@ -1180,6 +1095,11 @@ JOIN hr_olap.dim_performance as per
         <rename>YearsWithCurrManager</rename>
         <update>Y</update>
       </value>
+      <value>
+        <name>load_date</name>
+        <rename>load_date</rename>
+        <update>Y</update>
+      </value>
     </lookup>
     <attributes/>
     <cluster_schema/>
@@ -1190,94 +1110,7 @@ JOIN hr_olap.dim_performance as per
       </output>
     </remotesteps>
     <GUI>
-      <xloc>384</xloc>
-      <yloc>336</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Unique rows (HashSet)</name>
-    <type>UniqueRowsByHashSet</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <store_values>N</store_values>
-    <reject_duplicate_row>N</reject_duplicate_row>
-    <error_description/>
-    <fields>
-      <field>
-        <name>EmployeeKey</name>
-      </field>
-      <field>
-        <name>JobKey</name>
-      </field>
-      <field>
-        <name>SatisfactionKey</name>
-      </field>
-      <field>
-        <name>PerformanceKey</name>
-      </field>
-      <field>
-        <name>﻿Age</name>
-      </field>
-      <field>
-        <name>Attrition</name>
-      </field>
-      <field>
-        <name>DailyRate</name>
-      </field>
-      <field>
-        <name>DistanceFromHome</name>
-      </field>
-      <field>
-        <name>HourlyRate</name>
-      </field>
-      <field>
-        <name>MonthlyIncome</name>
-      </field>
-      <field>
-        <name>MonthlyRate</name>
-      </field>
-      <field>
-        <name>NumCompaniesWorked</name>
-      </field>
-      <field>
-        <name>PercentSalaryHike</name>
-      </field>
-      <field>
-        <name>TotalWorkingYears</name>
-      </field>
-      <field>
-        <name>TrainingTimesLastYear</name>
-      </field>
-      <field>
-        <name>YearsAtCompany</name>
-      </field>
-      <field>
-        <name>YearsInCurrentRole</name>
-      </field>
-      <field>
-        <name>YearsSinceLastPromotion</name>
-      </field>
-      <field>
-        <name>YearsWithCurrManager</name>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>240</xloc>
+      <xloc>464</xloc>
       <yloc>336</yloc>
       <draw>Y</draw>
     </GUI>
