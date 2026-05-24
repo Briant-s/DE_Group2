@@ -458,6 +458,7 @@
 , job.JobKey
 , sat.SatisfactionKey
 , per.PerformanceKey
+, dat.DateKey
 , ﻿Age
 , Attrition
 , DailyRate
@@ -473,7 +474,7 @@
 , YearsInCurrentRole
 , YearsSinceLastPromotion
 , YearsWithCurrManager
-, load_date
+, dat.load_date
 FROM hr_oltp.clean_employees as dc
 JOIN hr_olap.dim_employee as em
 	ON dc.EmployeeNumber = em.EmployeeNumber
@@ -488,7 +489,8 @@ JOIN hr_olap.dim_satisfaction as sat
 JOIN hr_olap.dim_performance as per
 	ON dc.EmployeeNumber = per.EmployeeNumber
 	AND per.date_to = '2035-12-31 23:59:59'
-</sql>
+JOIN hr_olap.dim_date AS dat
+    ON DATE_FORMAT(dc.load_date, '%Y%m%d') = dat.DateKey;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -573,6 +575,29 @@ JOIN hr_olap.dim_performance as per
         <precision>0</precision>
         <origin>Attrition Input</origin>
         <comments>PerformanceKey</comments>
+        <conversion_Mask>####0;-####0</conversion_Mask>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_ID</date_format_locale>
+        <date_format_timezone>Asia/Jakarta</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>Integer</type>
+        <storagetype>normal</storagetype>
+        <name>DateKey</name>
+        <length>9</length>
+        <precision>0</precision>
+        <origin>Attrition Input</origin>
+        <comments>DateKey</comments>
         <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -1018,6 +1043,11 @@ JOIN hr_olap.dim_performance as per
       <value>
         <name>PerformanceKey</name>
         <rename>PerformanceKey</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>DateKey</name>
+        <rename>DateKey</rename>
         <update>Y</update>
       </value>
       <value>
